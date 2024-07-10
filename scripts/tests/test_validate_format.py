@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import unittest
+import os
+import tempfile
 
+from validate.format import check_file_format, main
+from validate.format import error_message, check_file_format
 from validate.format import error_message
 from validate.format import get_categories_content
 from validate.format import check_alphabetical_order
@@ -15,7 +19,21 @@ from validate.format import check_file_format, min_entries_per_category, num_seg
 
 
 class TestValidadeFormat(unittest.TestCase):
-    
+
+    def test_main_function(self):
+        with tempfile.NamedTemporaryFile(delete=False, mode='w', encoding='utf-8', suffix='.md') as tmp:
+            filename = tmp.name
+            tmp.write("## Index\n")
+            tmp.write("* [A](#a)\n")
+            tmp.write("\n")
+            tmp.write("### A\n")
+            tmp.write("API | Description | Auth | HTTPS | CORS |\n")
+            tmp.write("|---|---|---|---|---|\n")
+            tmp.write("| [AA](https://www.ex.com) | Desc | `apiKey` | Yes | Yes |\n")
+
+        main(filename)
+        os.remove(filename)
+
     def test_error_message_return_and_return_type(self):
         line_num_unity = 1
         line_num_ten = 10
